@@ -9,6 +9,7 @@
 
     <script type="text/javascript">
         let defaultAccount = false;
+        let todoContract = false;
         function consoleIt(msg) {
             if (typeof msg === "object") {
                 $('#console').append('<div>' + JSON.stringify(msg) + '</div>');
@@ -61,6 +62,128 @@
                 web3 = new Web3(new Web3.providers.HttpProvider("http://127.0.0.1:8545"));
             }
         }
+        function loadContract() {
+            var contractAbi = web3.eth.contract([
+                {
+                    "constant": false,
+                    "inputs": [
+                        {
+                            "name": "index",
+                            "type": "uint256"
+                        }
+                    ],
+                    "name": "completeTodo",
+                    "outputs": [],
+                    "payable": false,
+                    "stateMutability": "nonpayable",
+                    "type": "function"
+                },
+                {
+                    "constant": true,
+                    "inputs": [],
+                    "name": "getTodos",
+                    "outputs": [
+                        {
+                            "name": "",
+                            "type": "bytes32[]"
+                        }
+                    ],
+                    "payable": false,
+                    "stateMutability": "view",
+                    "type": "function"
+                },
+                {
+                    "constant": false,
+                    "inputs": [
+                        {
+                            "name": "task",
+                            "type": "bytes32"
+                        }
+                    ],
+                    "name": "addTodo",
+                    "outputs": [],
+                    "payable": false,
+                    "stateMutability": "nonpayable",
+                    "type": "function"
+                },
+                {
+                    "constant": true,
+                    "inputs": [
+                        {
+                            "name": "index",
+                            "type": "uint256"
+                        }
+                    ],
+                    "name": "getTodo",
+                    "outputs": [
+                        {
+                            "name": "",
+                            "type": "bytes32"
+                        },
+                        {
+                            "name": "",
+                            "type": "address"
+                        },
+                        {
+                            "name": "",
+                            "type": "bool"
+                        },
+                        {
+                            "name": "",
+                            "type": "address"
+                        },
+                        {
+                            "name": "",
+                            "type": "uint256"
+                        }
+                    ],
+                    "payable": false,
+                    "stateMutability": "view",
+                    "type": "function"
+                },
+                {
+                    "inputs": [],
+                    "payable": false,
+                    "stateMutability": "nonpayable",
+                    "type": "constructor"
+                },
+                {
+                    "anonymous": false,
+                    "inputs": [
+                        {
+                            "indexed": false,
+                            "name": "owner",
+                            "type": "address"
+                        },
+                        {
+                            "indexed": false,
+                            "name": "task",
+                            "type": "bytes32"
+                        }
+                    ],
+                    "name": "todoAdded",
+                    "type": "event"
+                },
+                {
+                    "anonymous": false,
+                    "inputs": [
+                        {
+                            "indexed": false,
+                            "name": "index",
+                            "type": "uint256"
+                        }
+                    ],
+                    "name": "todoCompleted",
+                    "type": "event"
+                }
+            ]);
+
+            todoContract = contractAbi.at('0xd09151567a055521e3ddf4a4fa71abcd042654b0');
+            if (todoContract) {
+                consoleIt('contract loaded');
+            }
+
+        }
         $(document).ready(() => {
             startWeb3();
         });
@@ -73,6 +196,8 @@
         <div class="container">
             <div class="row">
                 <button onclick="startWeb3();">Start Web3</button>
+
+                <button onclick="loadContract();">Load Contract</button>
             </div>
             <div class="row">
                 <pre id="console"></pre>
