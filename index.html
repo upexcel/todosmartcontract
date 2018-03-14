@@ -197,6 +197,25 @@
                 consoleIt('transaction in process <a target="_blank" href="https://rinkeby.etherscan.io/tx/' + obj + '"> ' + obj + '</a>  ');
             })
         }
+
+        function getTodos() {
+            todoContract.getTodos((err, obj) => {
+                if (err)
+                    consoleIt(err);
+                //this is a constant function, so there is not transaction no. 
+                //this will directly return the results.
+                consoleIt('Fetching Todos');
+                for (i = 0; i < obj.length; i++) {                
+                    //in solidity we have to create array of fixed length.
+                    //in our contract it was 80. 
+                    //since we only have 1 todo, other todo's will have value zero.
+                    //need to remove other todo values
+                    if (web3.toBigNumber(obj[i]).toNumber() !== 0) {
+                        consoleIt("Todo Task Found" + web3.toAscii(obj[i]));
+                    }
+                }
+            })
+        }
     </script>
 </head>
 
@@ -210,6 +229,8 @@
                 <button onclick="loadContract();">Load Contract</button>
 
                 <button onclick="addTodo();">Add Todo</button>
+
+                <button onclick="getTodos();">Get All Todo</button>
             </div>
             <div class="row">
                 <pre id="console"></pre>
