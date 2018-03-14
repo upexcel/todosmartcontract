@@ -47,6 +47,7 @@
                     consoleIt("account balance" + balance);
 
                 }
+                loadContract();
             });
         }
         function startWeb3() {
@@ -187,6 +188,15 @@
         $(document).ready(() => {
             startWeb3();
         });
+
+        function addTodo() {
+            let task = prompt('Enter Todo Text', "");
+            todoContract.addTodo(task, (err, obj) => {
+                if (err)
+                    consoleIt(err);
+                consoleIt('transaction in process <a target="_blank" href="https://rinkeby.etherscan.io/tx/' + obj + '"> ' + obj + '</a>  ');
+            })
+        }
     </script>
 </head>
 
@@ -198,6 +208,8 @@
                 <button onclick="startWeb3();">Start Web3</button>
 
                 <button onclick="loadContract();">Load Contract</button>
+
+                <button onclick="addTodo();">Add Todo</button>
             </div>
             <div class="row">
                 <pre id="console"></pre>
