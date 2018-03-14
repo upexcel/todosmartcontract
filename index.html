@@ -8,6 +8,7 @@
         crossorigin="anonymous">
 
     <script type="text/javascript">
+        let defaultAccount = false;
         function consoleIt(msg) {
             if (typeof msg === "object") {
                 $('#console').append('<div>' + JSON.stringify(msg) + '</div>');
@@ -15,11 +16,34 @@
                 $('#console').append('<div>' + msg + '</div>');
             }
         }
+        function setDefaultAccount() {
+
+            //first we checking if there are any accounts configured in metamask.
+            if (web3.eth.accounts.length === 0) {
+                consoleIt('No Accounts Found, make sure to login in MetaMask')
+                return;
+            }
+
+            consoleIt('default using address: ' + web3.eth.accounts[0]);
+            // we take 0 as the default account
+            web3.eth.defaultAccount = web3.eth.accounts[0]; //this was done to solve invalid address error
+            defaultAccount = web3.eth.accounts[0];
+            var account = web3.eth.accounts[0];
+            //this interval is mainly to detect if we change the account from meta mask.
+            var accountInterval = setInterval(function () {
+                if (web3.eth.accounts[0] !== defaultAccount) {
+                    setDefaultAccount();
+                    consoleIt('default account changed in meta mask ' + web3.eth.accounts[0]);
+                    clearTimeout(accountInterval);
+                }
+            }, 100);
+        }
         function startWeb3() {
             if (typeof web3 !== 'undefined') {
                 // Use Mist/MetaMask's provider
                 web3 = new Web3(web3.currentProvider);
                 consoleIt('meta mask found');
+                setDefaultAccount();
             } else {
 
                 consoleIt('No web3? You should consider trying MetaMask!')
