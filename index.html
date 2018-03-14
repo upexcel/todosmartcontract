@@ -182,6 +182,24 @@
             todoContract = contractAbi.at('0xd09151567a055521e3ddf4a4fa71abcd042654b0');
             if (todoContract) {
                 consoleIt('contract loaded');
+
+                let addTodoEvent = todoContract.todoAdded();
+                addTodoEvent.watch((err, obj) => {
+                    if (err) {
+                        console.log(err);
+                    }
+                    console.log(obj);
+
+                    consoleIt('Todo Got Added with task: ' + web3.toAscii(obj.args.task));
+                });
+
+                let completeTodoEvent = todoContract.todoCompleted();
+                completeTodoEvent.watch( (err, obj) => {
+                    if (err) {
+                        console.log(err);
+                    };
+                    consoleIt('Todo With Index Got completed: ' + web3.toBigNumber(obj.args.index).toNumber());
+                });
             }
 
         }
@@ -231,14 +249,14 @@
             todoContract.getTodo(todoIndex, (err, obj) => {
                 if (err)
                     consoleIt(err);
-                
+
                 consoleIt('Todo Details For index' + todoIndex);
                 let task = web3.toAscii(obj[0]);
                 let owner = obj[1];
                 let isComplete = obj[2];
                 let completed_by = obj[3];
                 let complete_at = web3.toBigNumber(obj[4]).toNumber();
-                consoleIt("Task :" + task + " Owner: " + owner + " is Completed " + isComplete + "completed by " + completed_by + " completed at" + new Date(complete_at));
+                consoleIt("Task :" + task + " Owner: " + owner + " is Completed " + isComplete + " completed by " + completed_by + " completed at" + new Date(complete_at));
             });
         }
     </script>
