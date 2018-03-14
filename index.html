@@ -1,0 +1,48 @@
+<head>
+    <script src="web3.min.js">
+    </script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+        crossorigin="anonymous">
+
+    <script type="text/javascript">
+        function consoleIt(msg) {
+            if (typeof msg === "object") {
+                $('#console').append('<div>' + JSON.stringify(msg) + '</div>');
+            } else {
+                $('#console').append('<div>' + msg + '</div>');
+            }
+        }
+        function startWeb3() {
+            if (typeof web3 !== 'undefined') {
+                // Use Mist/MetaMask's provider
+                web3 = new Web3(web3.currentProvider);
+                consoleIt('meta mask found');
+            } else {
+
+                consoleIt('No web3? You should consider trying MetaMask!')
+                // fallback - use your fallback strategy (local node / hosted node +  in-dapp id mgmt / fail)
+                web3 = new Web3(new Web3.providers.HttpProvider("http://127.0.0.1:8545"));
+            }
+        }
+        $(document).ready(() => {
+            startWeb3();
+        });
+    </script>
+</head>
+
+<body>
+
+    <div class="jumbotron">
+        <div class="container">
+            <div class="row">
+                <button onclick="startWeb3();">Start Web3</button>
+            </div>
+            <div class="row">
+                <pre id="console"></pre>
+            </div>
+        </div>
+    </div>
+</body>
