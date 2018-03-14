@@ -205,16 +205,41 @@
                 //this is a constant function, so there is not transaction no. 
                 //this will directly return the results.
                 consoleIt('Fetching Todos');
-                for (i = 0; i < obj.length; i++) {                
+                for (i = 0; i < obj.length; i++) {
                     //in solidity we have to create array of fixed length.
                     //in our contract it was 80. 
                     //since we only have 1 todo, other todo's will have value zero.
                     //need to remove other todo values
                     if (web3.toBigNumber(obj[i]).toNumber() !== 0) {
-                        consoleIt("Todo Task Found" + web3.toAscii(obj[i]));
+                        consoleIt("Todo:::: [" + i + "]" + web3.toAscii(obj[i]));
                     }
                 }
             })
+        }
+
+        function completeTodo() {
+            let todoIndex = prompt('Input the index of todo which you want to complete', 0);
+            todoContract.completeTodo(todoIndex, (err, obj) => {
+                if (err)
+                    consoleIt(err);
+                consoleIt('transaction in process <a target="_blank" href="https://rinkeby.etherscan.io/tx/' + obj + '"> ' + obj + '</a>  ');
+            });
+        }
+
+        function getTodoDetail() {
+            let todoIndex = prompt('Input the index of todo which you want to complete', 0);
+            todoContract.getTodo(todoIndex, (err, obj) => {
+                if (err)
+                    consoleIt(err);
+                
+                consoleIt('Todo Details For index' + todoIndex);
+                let task = web3.toAscii(obj[0]);
+                let owner = obj[1];
+                let isComplete = obj[2];
+                let completed_by = obj[3];
+                let complete_at = web3.toBigNumber(obj[4]).toNumber();
+                consoleIt("Task :" + task + " Owner: " + owner + " is Completed " + isComplete + "completed by " + completed_by + " completed at" + new Date(complete_at));
+            });
         }
     </script>
 </head>
@@ -231,6 +256,10 @@
                 <button onclick="addTodo();">Add Todo</button>
 
                 <button onclick="getTodos();">Get All Todo</button>
+
+                <button onclick="completeTodo();">Complete Todo</button>
+
+                <button onclick="getTodoDetail();">Todo Detail</button>
             </div>
             <div class="row">
                 <pre id="console"></pre>
