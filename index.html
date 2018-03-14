@@ -37,6 +37,16 @@
                     clearTimeout(accountInterval);
                 }
             }, 100);
+            getBalance();
+        }
+        function getBalance() {
+            web3.eth.getBalance(web3.eth.accounts[0], function (error, wei) {
+                if (!error) {
+                    var balance = web3.fromWei(wei, 'ether');
+                    consoleIt("account balance" + balance);
+
+                }
+            });
         }
         function startWeb3() {
             if (typeof web3 !== 'undefined') {
